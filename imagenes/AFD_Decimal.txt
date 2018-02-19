@@ -1,0 +1,7 @@
+digraph G{ 
+ graph[rankdir=LR]; 
+1->2[label="digito"];
+2->3[label="."];
+3->5[label="digito"];
+5->5[label="digito"];
+}

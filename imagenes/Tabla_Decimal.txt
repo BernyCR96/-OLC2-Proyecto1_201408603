@@ -1,0 +1,17 @@
+digraph G{ 
+ node [shape=plaintext] 
+ a [label=<<table border="0" cellborder="1" cellspacing="0">
+<tr><td><b>Cerradura</b></td><td><b>---MUEVE----</b></td></tr>
+<tr>
+<td><b>1=1,</b></td>
+<td><b>2=digito</b></td></tr>
+<tr>
+<td><b>2=2,</b></td>
+<td><b>3=.</b></td></tr>
+<tr>
+<td><b>3=3,4,</b></td>
+<td><b>5=digito</b></td></tr>
+<tr>
+<td><b>5=4,5,6,</b></td>
+<td><b>5=digito</b></td></tr></table>>]; 
+}

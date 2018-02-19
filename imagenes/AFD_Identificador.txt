@@ -1,0 +1,16 @@
+digraph G{ 
+ graph[rankdir=LR]; 
+0->1[label="letra"];
+1->12[label="_"];
+1->5[label="digito"];
+1->10[label="letra"];
+12->12[label="_"];
+12->5[label="digito"];
+12->10[label="letra"];
+5->12[label="_"];
+5->5[label="digito"];
+5->10[label="letra"];
+10->12[label="_"];
+10->5[label="digito"];
+10->10[label="letra"];
+}
