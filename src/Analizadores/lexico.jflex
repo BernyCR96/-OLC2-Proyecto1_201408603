@@ -26,7 +26,7 @@ numero = {digito}+("." {digito}+)?//E.R. que reconoce tanto decimales como enter
 Letra = [a-zA-Z] //E.R. que reconoce el intervalo de letras de la a hasta z minúsculas y mayúsculas.
 identificador = {Letra}+({Letra}|{numero}|"_")*//E.R. para reconocer identificadores
 inicio = "--"
-otro_simb = ["%"|"&"|"{"|"-"|"!"|"#"|"$"|"/"|"("|")"|"="|"?"|"¿"|"¡"|"°"|"¬"|"}"|"^"|"_"|"+"|"*"]  
+otro_simb = ["%"|"&"|"{"|"-"|"!"|"#"|"$"|"/"|"("|")"|"="|"?"|"¿"|"¡"|"°"|"¬"|"}"|"^"|"_"|"+"|"*"|":"|"."|","|";"]  
 
 cadena_dos = "\""[^\"]*"\""
 
@@ -109,6 +109,7 @@ cadena_dos = "\""[^\"]*"\""
     "alto"   {System.out.println("pr_alto  "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.pr_alto, yycolumn, yyline, yytext());}
     "ancho"    {System.out.println("pr_ancho "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.pr_ancho, yycolumn, yyline, yytext());}
     "alineado"   {System.out.println("pr_alineado"+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline); return new Symbol(Simbolos.pr_alineado, yycolumn, yyline, yytext());}
+    "fondo"   {System.out.println("pr_fondo"+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline); return new Symbol(Simbolos.pr_fondo, yycolumn, yyline, yytext());}
     "ccss"        {System.out.println("pr_atri_ccss "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.pr_atri_ccss, yycolumn, yyline, yytext());}
     "valor"        {System.out.println("pr_valor "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.pr_valor, yycolumn, yyline, yytext());}
     

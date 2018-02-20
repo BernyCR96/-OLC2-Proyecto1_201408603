@@ -115,7 +115,7 @@ action code
 //-------------------> se les puede indicar x tipo
 //-------------------> numero es string porque me interesa el valor lexico que trae
 terminal p_coma, menor, mayor, igual,coma;
-terminal pr_chtml, pr_encabezado, pr_cjs, pr_ccss, pr_titulo, pr_cuerpo, pr_panel, pr_texto;
+terminal pr_chtml, pr_encabezado, pr_cjs, pr_ccss, pr_titulo, pr_cuerpo, pr_panel, pr_texto,pr_fondo;
 terminal pr_caja_texto, pr_imagen, pr_boton, pr_enlace, pr_tabla, pr_fil_t, pr_cb, pr_ct, pr_valor;
 terminal pr_texto_a, pr_caja, pr_opcion, pr_spinner, pr_salto, pr_click, pr_ruta, pr_id;
 terminal pr_grupo, pr_alto, pr_ancho, pr_alineado, pr_atri_ccss, ptodo;
@@ -173,6 +173,13 @@ ENCABEZADO ::= menor pr_encabezado mayor CONT_EN:val menor pr_finencabezado mayo
 CUERPO ::= menor pr_cuerpo mayor CONT_C:val menor pr_fincuerpo mayor {:
         RESULT = new NodoA("CUERPO");
         RESULT.getListaDehojas().add(val);
+        
+        :}
+
+        | menor pr_cuerpo pr_fondo igual E:val2 p_coma mayor CONT_C:val  menor pr_fincuerpo mayor {:
+        RESULT = new NodoA("CUERPO");
+        RESULT.getListaDehojas().add(val);
+        RESULT.getListaDehojas().add(val2);
         
         :};
 
@@ -239,14 +246,14 @@ CONT_C ::= CONT_C:val CU:valor{:
         
         :};
 
-CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
+CU ::= menor pr_panel L_AT:val p_coma mayor CONT_C:valor menor pr_finpanel mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("PANEL"));
         RESULT.getListaDehojas().add(val);
         RESULT.getListaDehojas().add(valor);
         
     :}
-    |menor pr_panel mayor CU:val menor pr_finpanel mayor{:
+    |menor pr_panel mayor CONT_C:val menor pr_finpanel mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("PANEL"));
         RESULT.getListaDehojas().add(val);
@@ -275,6 +282,14 @@ CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("TEXTO"));
         
+        
+    :}
+
+    |menor pr_texto mayor L_ID:id menor pr_fintexto mayor{:
+        RESULT = new NodoA("CU");
+        
+        RESULT.getListaDehojas().add(new NodoA("TEXTO"));
+        RESULT.getListaDehojas().add(new NodoA(id));
         
     :}
 
@@ -348,6 +363,13 @@ CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
 
     :}
 
+    |menor pr_tabla mayor  menor pr_fintabla mayor{:
+                RESULT = new NodoA("CU");
+        RESULT.getListaDehojas().add(new NodoA("TABLA"));
+        
+
+    :}
+
     |menor pr_texto_a L_AT:val p_coma mayor L_ID:cont menor pr_fintexto_a mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("TEXTO_A"));
@@ -355,6 +377,15 @@ CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
         RESULT.getListaDehojas().add(new NodoA(cont));
 
     :}
+
+    |menor pr_texto_a L_AT:val p_coma mayor menor pr_fintexto_a mayor{:
+        RESULT = new NodoA("CU");
+        RESULT.getListaDehojas().add(new NodoA("TEXTO_A"));
+        RESULT.getListaDehojas().add(val);
+        
+
+    :}
+
     |menor pr_texto_a mayor L_ID:val menor pr_fintexto_a mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("TEXTO_A"));
@@ -362,7 +393,15 @@ CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
 
     :}
 
-    |menor pr_caja L_AT2:val p_coma mayor CAJA_OP:cont menor pr_fincaja mayor{:
+     |menor pr_texto_a mayor menor pr_fintexto_a mayor{:
+        RESULT = new NodoA("CU");
+        RESULT.getListaDehojas().add(new NodoA("TEXTO_A"));
+        
+
+    :}
+
+
+     |menor pr_caja L_AT2:val p_coma mayor CAJA_OP:cont menor pr_fincaja mayor{:
         RESULT = new NodoA("CU");
         RESULT.getListaDehojas().add(new NodoA("Caja"));
         RESULT.getListaDehojas().add(val);
@@ -383,9 +422,22 @@ CU ::= menor pr_panel L_AT:val p_coma mayor CU:valor menor pr_finpanel mayor{:
          RESULT.getListaDehojas().add(new NodoA("salto"));
          
     :}
+
+    |menor pr_spinner L_AT:val p_coma mayor menor pr_finspinner mayor{:
+         RESULT = new NodoA("CU");
+         RESULT.getListaDehojas().add(val);
+         RESULT.getListaDehojas().add(new NodoA("salto"));
+         
+    :}
+
     |menor pr_spinner mayor numero:n menor pr_finspinner mayor{:
          RESULT = new NodoA("CU");
          RESULT.getListaDehojas().add(new NodoA("Spinner " + n));
+         
+    :}
+    |menor pr_spinner mayor  menor pr_finspinner mayor{:
+         RESULT = new NodoA("CU");
+         RESULT.getListaDehojas().add(new NodoA("Spinner "));
          
     :}
 
@@ -443,29 +495,17 @@ L_AT2 ::= L_AT2:val p_coma L_ATRIBUTOS2:hijo{:
             RESULT.getListaDehojas().add(val);
         :};
 
-L_ATRIBUTOS ::= pr_click igual E:val pr_parA pr_parC{:
+L_ATRIBUTOS ::= pr_click igual E:val {:
             RESULT = new NodoA("L_ATRIBUTOS");
             RESULT.getListaDehojas().add(new NodoA("Click"));
             RESULT.getListaDehojas().add(new NodoA("="));
             RESULT.getListaDehojas().add(val);
-            RESULT.getListaDehojas().add(new NodoA("("));
-            RESULT.getListaDehojas().add(new NodoA(")"));
+           
 
             
 
             :}
 
-            | pr_click igual E:val pr_parA L_PAR:val2 pr_parC{:
-            RESULT = new NodoA("L_ATRIBUTOS");
-            RESULT.getListaDehojas().add(new NodoA("Igual"));
-            RESULT.getListaDehojas().add(new NodoA("="));
-            RESULT.getListaDehojas().add(val);
-            RESULT.getListaDehojas().add(new NodoA("("));
-            RESULT.getListaDehojas().add(val2);
-            RESULT.getListaDehojas().add(new NodoA(")"));
-
-
-            :}
 
 
             | pr_id:id igual:asig E:val {:
@@ -510,7 +550,7 @@ L_ATRIBUTOS ::= pr_click igual E:val pr_parA pr_parC{:
             :};
             
 
-L_ATRIBUTOS2 ::= pr_click igual E:val pr_parA pr_parC{:
+L_ATRIBUTOS2 ::= pr_click igual E:val {:
             RESULT = new NodoA("L_ATRIBUTOS2");
             RESULT.getListaDehojas().add(new NodoA("Click"));
             RESULT.getListaDehojas().add(new NodoA("="));
@@ -522,17 +562,7 @@ L_ATRIBUTOS2 ::= pr_click igual E:val pr_parA pr_parC{:
 
             :}
 
-            | pr_click igual E:val pr_parA L_PAR:val2 pr_parC{:
-            RESULT = new NodoA("L_ATRIBUTOS2");
-            RESULT.getListaDehojas().add(new NodoA("Igual"));
-            RESULT.getListaDehojas().add(new NodoA("="));
-            RESULT.getListaDehojas().add(val);
-            RESULT.getListaDehojas().add(new NodoA("("));
-            RESULT.getListaDehojas().add(val2);
-            RESULT.getListaDehojas().add(new NodoA(")"));
-
-
-            :}
+          
 
             | pr_ruta:ruta igual:asig E:val {:
             RESULT = new NodoA("L_ATRIBUTOS2");
@@ -598,7 +628,7 @@ CU_T ::= CU_T:val CUERPO_TABLA:cuerpo{:
         RESULT.getListaDehojas().add(val);
         :};
 
-CUERPO_TABLA ::= menor pr_fil_t L_AT:atr mayor CU_FIL:val menor pr_finfil_t mayor {:
+CUERPO_TABLA ::= menor pr_fil_t L_AT:atr p_coma mayor CU_FIL:val menor pr_finfil_t mayor {:
             RESULT = new NodoA("CUERPO_TABLA");
             RESULT.getListaDehojas().add(atr);
             RESULT.getListaDehojas().add(val);
@@ -609,7 +639,12 @@ CUERPO_TABLA ::= menor pr_fil_t L_AT:atr mayor CU_FIL:val menor pr_finfil_t mayo
         |menor pr_fil_t mayor CU_FIL:val menor pr_finfil_t mayor {:
             RESULT = new NodoA("CUERPO_TABLA");
             RESULT.getListaDehojas().add(val);
-        :};
+        :}
+
+         |menor pr_fil_t mayor menor pr_finfil_t mayor {:
+            RESULT = new NodoA("CUERPO_TABLA");
+            
+        :} ;
 
 CU_FIL ::= CU_FIL:val CONT_FIL:id{:
             RESULT = val;
@@ -620,7 +655,14 @@ CU_FIL ::= CU_FIL:val CONT_FIL:id{:
         RESULT = new NodoA("CU_FIL");
         :};
 
-CONT_FIL ::= menor pr_cb mayor CONT_COL:cont  menor pr_fincb mayor{:
+CONT_FIL ::= menor pr_cb L_AT:atr p_coma mayor CONT_COL:cont  menor pr_fincb mayor{:
+            RESULT = new NodoA("CONT_FIL");
+            RESULT.getListaDehojas().add(new NodoA("CB"));
+            RESULT.getListaDehojas().add(atr);
+            RESULT.getListaDehojas().add(cont);
+            :}
+
+            |menor pr_cb mayor CONT_COL:cont  menor pr_fincb mayor{:
             RESULT = new NodoA("CONT_FIL");
             RESULT.getListaDehojas().add(new NodoA("CB"));
             RESULT.getListaDehojas().add(cont);
@@ -630,6 +672,13 @@ CONT_FIL ::= menor pr_cb mayor CONT_COL:cont  menor pr_fincb mayor{:
             RESULT = new NodoA("CONT_FIL");
             RESULT.getListaDehojas().add(new NodoA("CT"));
             RESULT.getListaDehojas().add(cont);
+            :}
+
+            |menor pr_ct L_AT:atr p_coma mayor CONT_COL:cont menor pr_finct mayor{:
+            RESULT = new NodoA("CONT_FIL");
+            RESULT.getListaDehojas().add(new NodoA("CT"));
+            RESULT.getListaDehojas().add(cont);
+            RESULT.getListaDehojas().add(atr);
             :};
 
 CONT_COL ::= L_ID:id {:
