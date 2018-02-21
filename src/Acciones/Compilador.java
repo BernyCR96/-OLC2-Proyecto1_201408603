@@ -112,7 +112,7 @@ public class Compilador
             FileWriter escribir = new FileWriter(archivo_dot, false);
             escribir.write("digraph Grafo{\n " + cadena + "\n}\n");
             escribir.close();
-            CrearImg("C:\\Users\\Cardona\\Desktop\\[OLC1]Proyecto1_201408603\\arbol.txt","C:\\Users\\Cardona\\Desktop\\[OLC1]Proyecto1_201408603\\grafo.png");
+            CrearImg("C:\\Users\\Cardona\\Desktop\\[OLC2]Proyecto1_201408603\\arbol.txt","C:\\Users\\Cardona\\Desktop\\[OLC2]Proyecto1_201408603\\grafo.png");
         } catch (Exception e) {
             System.err.println("Error al crear el DOT");
         } finally {
