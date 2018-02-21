@@ -25,10 +25,12 @@ numero = {digito}+("." {digito}+)?//E.R. que reconoce tanto decimales como enter
 
 Letra = [a-zA-Z] //E.R. que reconoce el intervalo de letras de la a hasta z minúsculas y mayúsculas.
 identificador = {Letra}+({Letra}|{numero}|"_")*//E.R. para reconocer identificadores
-inicio = "--"
+inicio = [>](([ ]|\t|\r|\n|\f)*)({otro_simb}|{numero}|([a-z]|[A-z]))
 otro_simb = ["%"|"&"|"{"|"-"|"!"|"#"|"$"|"/"|"("|")"|"="|"?"|"¿"|"¡"|"°"|"¬"|"}"|"^"|"_"|"+"|"*"|":"|"."|","|";"]+  
-texto = [>](([ ]|\t|\r|\n|\f)*)([a-z]|[A-z])([^<]+) | [>] (([ ]|\t|\r|\n|\f)*)({otro_simb}|{numero}|([a-z]|[A-z]))([^<]+) 
+//texto = [>](([ ]|\t|\r|\n|\f)*)([a-z]|[A-z])([^<]+) [<] | [>] (([ ]|\t|\r|\n|\f)*)([^<]+)[<]  
 cadena_dos = "\""[^\"]*"\""
+
+
 
 
 
@@ -43,7 +45,8 @@ cadena_dos = "\""[^\"]*"\""
 
  	"//"    {yybegin(COMENTARIO);}
     "<//-"    {yybegin(MULTI);}
-    {inicio}    {yybegin(STRING_CENTRO);}
+    {inicio}    {colector_cadena = yytext();
+                yybegin(STRING_CENTRO);}
     
   
     /*--------------------signos de agrupacion--------------------------------*/
@@ -117,7 +120,7 @@ cadena_dos = "\""[^\"]*"\""
     {identificador} {System.out.println("id "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.identificador, yycolumn, yyline, yytext());}
     {cadena_dos} {System.out.println("cadena "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.cadena, yycolumn, yyline, yytext());}
     {otro_simb} {System.out.println("simbolooo "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.otro_simb, yycolumn, yyline, yytext());}
-    {texto} {System.out.println("texto prueba "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.texto, yycolumn, yyline, yytext());}
+//    {texto} {System.out.println("texto prueba "+ yytext()+" columna: "+ yycolumn +" linea: "+ yyline);return new Symbol(Simbolos.texto, yycolumn, yyline, yytext());}
     
 }
 
@@ -146,17 +149,19 @@ cadena_dos = "\""[^\"]*"\""
 }
 
 <STRING_CENTRO>{
-    [^"-/"]     {colector_cadena += yytext();}
-    "-/"        {
-        String cadena_temporal = colector_cadena; 
+    "<"    {String cadena_temporal = colector_cadena; 
         colector_cadena = ""; 
         yybegin(YYINITIAL); 
         System.out.println("Comentario dentro etiquetas: "+cadena_temporal);
         return new Symbol(Simbolos.cadena2, yycolumn, yyline, cadena_temporal);
-           
-     }
-
 }
+    .       { 
+                colector_cadena += yytext();
+            }
+    [ \t\r\n\f] {}
+}
+
+
 
 [ \t\r\n\f]     {}
 
