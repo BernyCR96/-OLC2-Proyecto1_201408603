@@ -107,7 +107,7 @@ public class home extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
 
-        jMenuItem5.setText("Cargar thopson ");
+        jMenuItem5.setText("CHTML");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem5ActionPerformed(evt);
@@ -115,7 +115,12 @@ public class home extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem5);
 
-        jMenuItem6.setText("Guardar token");
+        jMenuItem6.setText("CCSS");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem6);
 
         jMenuItem7.setText("Guardar Errores");
@@ -259,6 +264,12 @@ catch (IOException ex)
         this.jLabel2.setIcon(Sonic1);   
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        
+        
+        
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments

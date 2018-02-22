@@ -6,7 +6,7 @@ Nodo3[label="CONT_EN"];
 Nodo4[label="REP"];
 Nodo5[label="TITULO"];
 Nodo4->Nodo5;
-Nodo6[label="a"];
+Nodo6[label="salto cuerpo chtml hola como estas gary 30r9uq3948123w6f4wd6fasd661111!!!"];
 Nodo4->Nodo6;
 Nodo3->Nodo4;
 Nodo7[label="REP"];

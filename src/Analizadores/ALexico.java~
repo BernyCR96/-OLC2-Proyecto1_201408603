@@ -897,7 +897,7 @@ public String comentario = "";
             }
           case 90: break;
           case 18: 
-            { colector_cadena = yytext().substring(1, yytext().length());
+            { colector_cadena = yytext();
                 yybegin(STRING_CENTRO);
             }
           case 91: break;

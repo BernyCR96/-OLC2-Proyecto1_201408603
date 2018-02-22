@@ -5,6 +5,8 @@
  */
 package Acciones;
 
+import Analizadores_CCSS.*;
+
 import Analizadores.ALexico;
 import Analizadores.NodoA;
 import Analizadores.Sintactico;
@@ -46,7 +48,8 @@ public class Compilador
         try 
         {
             //crear el lexico
-            ALexico lexico = new ALexico(new StringReader(entrada));
+            //ALexico lexico = new ALexico(new StringReader(entrada));
+            ALexicoCCSS lexico2 = new ALexicoCCSS(new StringReader (entrada));
             /*Symbol s = (Symbol)lexico.next_token();
             
             while(s.sym != 0 ){
@@ -60,16 +63,18 @@ public class Compilador
             
             //ejecutar el analisis
             */
-            Sintactico parser = new Sintactico(lexico);
-           // parser.parse();
+           // Sintactico parser = new Sintactico(lexico);
+            SintacticoCCSS parser_ccss = new SintacticoCCSS(lexico2);
+            parser_ccss.parse();
             
-            NodoA nuevo = (NodoA) parser.parse().value;
-            System.out.println("---------- el nombre es: "+ nuevo.getNombre());
+            //NodoA nuevo = (NodoA) parser.parse().value;
+            
+            //System.out.println("---------- el nombre es: "+ nuevo.getNombre());
             JOptionPane.showMessageDialog(null, "Analisis Completo","Ejemplo",1);
              cadena = "";
             cont = 0;
-            graficarArbol(nuevo);
-            CrearDot();
+            //graficarArbol(nuevo);
+            //CrearDot();
             
             
             

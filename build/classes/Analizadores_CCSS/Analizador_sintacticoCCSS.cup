@@ -1,0 +1,202 @@
+/*----------------------------------------------------------------------------
+--------------------- 1ra. Area: Codigo de Usuario
+----------------------------------------------------------------------------*/
+
+//-------------------> Importaciones 
+//-------------------> Paquetes 
+package Analizadores_CCSS;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.lang.Math;
+//-------------------> Codigo para el parser, variables, metodos
+parser code
+{:  
+    
+    public String salida="";
+
+    //-------------------> Metodo al que se llama automaticamente ante algun error sintactico.
+    public void syntax_error(Symbol s)
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!!!!!!! Error Sintactico Recuperado !!!!!!!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+    }
+
+
+    //-------------------> Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores.
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!!!!!!! Error Sintactico, Panic Mode!!!!!!!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);       
+    }
+
+    public void semantic(Symbol cur_token, String n) 
+    {
+        System.out.println("error semantico ");
+    }   
+  
+    public void escribir_fichero(String texto, String nombre) throws IOException {
+        String ruta = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".txt";
+        File archivo = new File(ruta);
+        BufferedWriter bw;
+        if (archivo.createNewFile()) {
+            bw = new BufferedWriter(new FileWriter(archivo));
+            bw.write(texto);
+        } else {
+            bw = new BufferedWriter(new FileWriter(archivo));
+            bw.write(texto);
+        }
+        bw.close();
+
+    }
+    public int contador = 0;
+
+    public void grafico(String nombre) {
+        try {
+
+            String dotPath = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+            String fileInputPath = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".txt";
+
+            String fileOutputPath = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".jpg";
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+    }  
+
+    public void semantic(String msg, Object obj) {}
+
+:}
+
+
+//-------------------> Codigo para las acciones gramaticales
+action code
+{:
+
+
+
+
+:}  
+
+
+/*----------------------------------------------------------------------------
+--------------------- 2da. Area: Declaraciones
+----------------------------------------------------------------------------*/
+
+//-------------------> Declaración de Terminales
+//-------------------> se les puede indicar x tipo
+//-------------------> numero es string porque me interesa el valor lexico que trae
+terminal cor_a, cor_c, pr_parA, pr_parC, p_coma, asig,por, mas, div, menos,coma;
+terminal  pr_alineado,pr_texto,pr_izquierda, pr_derecha, pr_centrado, pr_justificado, pr_formato;
+terminal  pr_negrilla, pr_true, pr_false, pr_cursiva, pr_mayuscula, pr_minuscula, pr_capital;
+terminal  pr_letra, pr_tamtext, pr_fondoelemento, pr_autoredimension, pr_visible, pr_borde, pr_opaque;
+terminal pr_colortext, pr_grupo, pr_id, pr_horizontal, pr_vertical,ptodo;
+
+terminal String numero, saltos, identificador,texto, cadena,cadena2, otro_simb,simb;
+
+
+//-------------------> Declaración de No Terminales
+//-------------------> se les puede indicar x tipo
+non terminal INICIO, DEF, DEFINICION, CUERPO_DEF, DETECCION, CU_DETECCION,CU_DEF,T_ALINEACION,CONCA,T_FORMATO,E,BOOL,AREA,CCSS,FORM;
+
+
+
+//-------------------> Indicar precedencia(de menor a mayor) y asociatividad
+//-------------------> Generalmente se usa si la gramatica es Ambigua
+precedence left mas, menos;
+precedence left por, div;
+
+
+
+
+//-------------------> No Terminal inicial
+start with INICIO;
+
+
+INICIO ::= DEF{::};
+
+DEF ::= DEF DEFINICION{::}
+    |DEFINICION{::};
+DEFINICION ::= identificador cor_a CUERPO_DEF cor_c {::}
+
+    |identificador cor_a cor_c {::};
+
+CUERPO_DEF ::= CUERPO_DEF DETECCION {::} 
+        |DETECCION{::};
+
+DETECCION ::= pr_grupo pr_parA identificador pr_parC p_coma CU_DETECCION {::}
+
+        |pr_id pr_parA identificador pr_parC p_coma CU_DETECCION{::};
+
+CU_DETECCION ::= CU_DETECCION CU_DEF{::}
+        | CU_DEF{::};
+
+CU_DEF ::= pr_alineado asig T_ALINEACION p_coma{::}
+        | pr_texto asig CONCA p_coma{::}
+        | pr_formato asig T_FORMATO p_coma{::}
+        | pr_letra asig cadena p_coma{::}
+        | pr_tamtext asig E p_coma{::}
+        | pr_fondoelemento asig cadena p_coma {::}
+        | pr_autoredimension asig cor_a BOOL coma AREA cor_c p_coma {::}
+        | pr_visible asig cadena p_coma {::}
+        | pr_borde asig cor_a E coma cadena coma BOOL cor_c p_coma{::}
+        | pr_opaque asig BOOL{::}
+        | pr_colortext asig cadena p_coma {::};
+
+T_ALINEACION ::= pr_justificado{::}
+        | pr_centrado{::}
+        | pr_izquierda{::}
+        | pr_derecha{::};
+
+T_FORMATO ::= T_FORMATO coma FORM{::}
+
+        |FORM{::};
+
+    FORM ::=    pr_cursiva{::}
+        | pr_negrilla{::}
+        | pr_minuscula{::}
+        | pr_mayuscula{::}
+        | pr_capital{::};
+
+CONCA ::= CONCA mas cadena{::}
+        | cadena{::};
+
+AREA ::= pr_horizontal{::}
+        |pr_vertical{::};
+
+BOOL ::= pr_true{::}
+        |pr_false{::};
+
+E ::= E mas E{::}
+    | E menos E{::}
+    | E por E{::}
+    | E div E{::}
+    | numero{::};
