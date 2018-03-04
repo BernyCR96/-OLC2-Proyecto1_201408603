@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class NodoA {
     
      private String nombre;
+     
 
     public String getNombre() {
         return nombre;

@@ -4,9 +4,17 @@
  * and open the template in the editor.
  */
 package olc1.proyecto1_201408603;
+
 import Acciones.*;
 import Analizadores.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,19 +23,26 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Cardona
  */
 public class home extends javax.swing.JFrame {
 
+    public String mensaje = "mensaje";
+
     /**
      * Creates new form home
      */
-    public home() {
+    private home() {
         initComponents();
     }
 
@@ -45,14 +60,8 @@ public class home extends javax.swing.JFrame {
         menu2 = new java.awt.Menu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jComboBox1 = new javax.swing.JComboBox();
-        jComboBox2 = new javax.swing.JComboBox();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
         jButton1 = new javax.swing.JButton();
-        label2 = new java.awt.Label();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -75,20 +84,12 @@ public class home extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AFD", "AFN" }));
-
-        jButton1.setText("Visualizar");
+        jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        label2.setText("Tabla de Transiciones");
 
         jMenu1.setText("File");
 
@@ -144,50 +145,19 @@ public class home extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(33, 33, 33)
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(27, 27, 27)
-                                        .addComponent(jButton1)
-                                        .addGap(0, 298, Short.MAX_VALUE)))))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(96, 96, 96)
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 967, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addContainerGap(585, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
-                        .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 525, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(6, 6, 6)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -195,30 +165,7 @@ public class home extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        JFileChooser filechooserabrir = new JFileChooser();
-filechooserabrir.setFileSelectionMode( JFileChooser.FILES_ONLY );
-FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos con extesion (*.der)", "der");
-filechooserabrir.setFileFilter(filtro);
-int seleccion = filechooserabrir.showOpenDialog(this);
-if(seleccion == JFileChooser.APPROVE_OPTION )
-{
 
-try {
-BufferedReader bufferreader;
-File file = filechooserabrir.getSelectedFile();
-bufferreader = new BufferedReader(new FileReader(file.getAbsolutePath()));
-String linea, contenido= "";
-//leeendo linea a linea
-while ((linea = bufferreader.readLine())!=null)
-{
-contenido += linea +"\n";
-}
-this.jTextArea1.setText(contenido);
-bufferreader.close();
-}
-catch (IOException ex)
-{Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);}
-}
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
@@ -227,50 +174,107 @@ catch (IOException ex)
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        Compilador nuevo = new Compilador();
-        nuevo.Analizar(jTextArea1.getText().toString());
-        
-      //  for (String dato : Sintactico.lista_id) {
+
+        //  for (String dato : Sintactico.lista_id) {
         //    jComboBox1.addItem(dato);
-       // }
-        
-        
+        // }
+
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        String nombre = (String) jComboBox1.getSelectedItem();
-        String afd = (String) jComboBox2.getSelectedItem();
-        
-        if ("AFN".equals(afd)) {
-           
-    
-        ImageIcon icon = new ImageIcon("C:/Users/andree/Documents/NetBeansProjects/[OLC1]Proyecto1_201408603/imagenes/"+nombre+".jpg");  
-        ImageIcon Sonic = new ImageIcon(icon.getImage().getScaledInstance(jLabel1.getWidth(), jLabel1.getHeight(), Image.SCALE_DEFAULT));
-        this.jLabel1.setIcon(Sonic);   
-        }
-        else{
-            
-          
-        
-        ImageIcon icon = new ImageIcon("C:/Users/andree/Documents/NetBeansProjects/[OLC1]Proyecto1_201408603/imagenes/AFD_"+nombre+".jpg"); 
-        ImageIcon Sonic = new ImageIcon(icon.getImage().getScaledInstance(jLabel1.getWidth(), jLabel1.getHeight(), Image.SCALE_DEFAULT));
-        this.jLabel1.setIcon(Sonic);   
-            
-        }
-        
-        ImageIcon icon1 = new ImageIcon("C:/Users/andree/Documents/NetBeansProjects/[OLC1]Proyecto1_201408603/imagenes/Tabla_"+nombre+".jpg"); 
-        ImageIcon Sonic1 = new ImageIcon(icon1.getImage().getScaledInstance(jLabel1.getWidth(), jLabel1.getHeight(), Image.SCALE_DEFAULT));
-        this.jLabel2.setIcon(Sonic1);   
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        
-        
-        
+
+
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Panel pa = new Panel();
+        addIt(pa, "pestaña nueva");
+
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public Panel obtenerPestañaActual() {
+        try {
+            return (Panel) jTabbedPane2.getSelectedComponent();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private static home unicaInstancia;
+
+    public static home obtenerInstancia() {
+        if (unicaInstancia == null) {
+            unicaInstancia = new home();
+        }
+
+        return unicaInstancia;
+    }
+
+    public JTabbedPane getpane(){
+         try {
+            return (JTabbedPane) this.jTabbedPane2;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    private ImageIcon closeXIcon = new ImageIcon("C:\\Users\\Cardona\\Desktop\\close.png");
+    private Dimension c_btn;
+    private int cont = 0;
+    
+    public void addText(final JTabbedPane panel,String pestaña){
+        JPanel pestañita = new JPanel();
+        JLabel label = new JLabel(pestaña);
+        JLabel button = new JLabel(closeXIcon);
+        button.setPreferredSize(c_btn);
+        button.addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                int closeTabNumber = jTabbedPane2.getSelectedIndex();
+                jTabbedPane2.removeTabAt(closeTabNumber);
+            }
+
+        });
+        pestañita.add(label, BorderLayout.WEST);
+        pestañita.add(button, BorderLayout.LINE_END);
+        
+        
+        panel.setTabComponentAt(panel.getSelectedIndex(), pestañita);
+        
+    }
+
+    public void addIt(final Panel panel, String text) {
+        JPanel pestañita = new JPanel();
+        panel.setNombre_tab(text);
+        
+        cont++;
+        panel.setPosicion(cont);
+        JLabel label = new JLabel(text);
+        JLabel button = new JLabel(closeXIcon);
+        button.setPreferredSize(c_btn);
+        button.addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                int closeTabNumber = jTabbedPane2.indexOfComponent(panel);
+                jTabbedPane2.removeTabAt(closeTabNumber);
+            }
+
+        });
+        pestañita.add(label, BorderLayout.WEST);
+        pestañita.add(button, BorderLayout.LINE_END);
+        this.jTabbedPane2.addTab(null, panel);
+        this.jTabbedPane2.setSelectedComponent(panel);
+        this.jTabbedPane2.setTabComponentAt(this.jTabbedPane2.getTabCount() - 1, pestañita);
+                
+        //
+        //this.add(this.jTabbedPane2, BorderLayout.CENTER);
+        //
+
+    }
+
+    public void agregarTab(){
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -308,10 +312,6 @@ catch (IOException ex)
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -323,9 +323,7 @@ catch (IOException ex)
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private java.awt.Label label2;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private java.awt.Menu menu1;
     private java.awt.Menu menu2;
     private java.awt.MenuBar menuBar1;

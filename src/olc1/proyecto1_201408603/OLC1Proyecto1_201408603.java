@@ -16,7 +16,7 @@ public class OLC1Proyecto1_201408603 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        home nuevo = new home();
+        home nuevo = home.obtenerInstancia();
         nuevo.setVisible(true);
         
     }

@@ -1,4 +1,4 @@
-package generadores;
+package Analizadores_CCSS;
 
 import java.io.File;
 

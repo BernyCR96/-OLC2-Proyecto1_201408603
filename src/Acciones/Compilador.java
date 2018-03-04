@@ -10,8 +10,12 @@ import Analizadores_CCSS.*;
 import Analizadores.ALexico;
 import Analizadores.NodoA;
 import Analizadores.Sintactico;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,13 +47,28 @@ public class Compilador
     ***     analizador_sintactico.parse();
     ***
     ------------------------------------------------------------------*/
-    public String Analizar(String entrada)
+    public void  Analizar(String ruta) throws FileNotFoundException, IOException
     {
+        
+          FileReader f = new FileReader(ruta);
+        BufferedReader b = new BufferedReader(f);
+        String contenido = "",cadena = "";
+        
+        while((cadena = b.readLine()) != null){
+            contenido += cadena + "\n";
+        }
+        
+        if(contenido.isEmpty()){
+            System.err.println("El archivo no tiene infomación o no se encuentra");
+            return;
+        }
         try 
         {
+            
+            
             //crear el lexico
             //ALexico lexico = new ALexico(new StringReader(entrada));
-            ALexicoCCSS lexico2 = new ALexicoCCSS(new StringReader (entrada));
+            ALexicoCCSS lexico2 = new ALexicoCCSS(new StringReader (contenido));
             /*Symbol s = (Symbol)lexico.next_token();
             
             while(s.sym != 0 ){
@@ -85,7 +104,7 @@ public class Compilador
         {
           
         }        
-        return null;
+        
     }
     private static int cont;
     private static String cadena;

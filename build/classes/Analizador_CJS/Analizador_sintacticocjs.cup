@@ -1,0 +1,530 @@
+/*----------------------------------------------------------------------------
+--------------------- 1ra. Area: Codigo de Usuario
+----------------------------------------------------------------------------*/
+
+//-------------------> Importaciones 
+//-------------------> Paquetes 
+package Analizador_CJS;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.lang.Math;
+//-------------------> Codigo para el parser, variables, metodos
+parser code
+{:  
+    
+    public String salida="";
+
+    //-------------------> Metodo al que se llama automaticamente ante algun error sintactico.
+    public void syntax_error(Symbol s)
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!!!!!!! Error Sintactico Recuperado !!!!!!!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);
+    }
+
+
+    //-------------------> Metodo al que se llama en el momento en que ya no es posible una recuperacion de errores.
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("!!!!!!! Error Sintactico, Panic Mode!!!!!!!");
+        System.out.println("\t\tLexema: "+lexema);
+        System.out.println("\t\tFila: "+fila);
+        System.out.println("\t\tColumna: "+columna);       
+    }
+
+    public void semantic(Symbol cur_token, String n) 
+    {
+        System.out.println("error semantico ");
+    }   
+  
+    public void escribir_fichero(String texto, String nombre) throws IOException {
+        String ruta = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".txt";
+        File archivo = new File(ruta);
+        BufferedWriter bw;
+        if (archivo.createNewFile()) {
+            bw = new BufferedWriter(new FileWriter(archivo));
+            bw.write(texto);
+        } else {
+            bw = new BufferedWriter(new FileWriter(archivo));
+            bw.write(texto);
+        }
+        bw.close();
+
+    }
+    public int contador = 0;
+
+    public void grafico(String nombre) {
+        try {
+
+            String dotPath = "C:\\Program Files (x86)\\Graphviz2.38\\bin\\dot.exe";
+            String fileInputPath = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".txt";
+
+            String fileOutputPath = "C:\\Users\\andree\\Documents\\NetBeansProjects\\[OLC1]Proyecto1_201408603\\imagenes\\" + nombre + ".jpg";
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+    }  
+
+    public void semantic(String msg, Object obj) {}
+
+:}
+
+
+//-------------------> Codigo para las acciones gramaticales
+action code
+{:
+
+
+
+
+:}  
+
+
+/*----------------------------------------------------------------------------
+--------------------- 2da. Area: Declaraciones
+----------------------------------------------------------------------------*/
+
+//-------------------> Declaración de Terminales
+//-------------------> se les puede indicar x tipo
+//-------------------> numero es string porque me interesa el valor lexico que trae
+terminal igual, diferente, menor, mayor, mayor_igual, menor_igual,pr_and, pr_or,pr_not;
+terminal llave_a,llave_c, pr_parA, pr_parC, punto, p_coma, dos_puntos,coma;
+terminal mas, menos, por, div, decremento, incremento;
+terminal pr_si, pr_sino, pr_para, pr_mientras, pr_funcion, pr_imprimir, pr_dimv, pr_retornar;
+terminal pr_detener, pr_documento, pr_observador, pr_atexto, pr_setelemento, pr_selecciona, ptodo;
+terminal pr_caso, pr_defecto, pr_mensaje, pr_obtener, pr_conteo;
+
+terminal String numero, identificador, cadena, pr_true, pr_false;
+
+
+//-------------------> Declaración de No Terminales
+//-------------------> se les puede indicar x tipo
+non terminal NodoAST INICIO, CJS, CUERPO, SENTENCIA, FUNCIONES, ASIG, PARA, MIENTRAS, SI,E, L_ID;
+non terminal NodoAST IMPRIMIR, RETORNO, SELECCIONA, DECLARACION, EVENTO, DETENER, MENSAJE, ASIGNACION;
+non terminal NodoAST L_EXP, OBSERVADOR, AGREGAR, CONTEO, L_SENTENCIA, CUERPO_SELE, CASO, OPERADOR, ARREGLO;
+//-------------------> Indicar precedencia(de menor a mayor) y asociatividad
+//-------------------> Generalmente se usa si la gramatica es Ambigua
+
+precedence left pr_and, pr_or;
+precedence left pr_not;
+precedence left mayor_igual, menor_igual, igual, diferente, mayor, menor;
+precedence left mas, menos;
+precedence left por, div;
+precedence left decremento;
+precedence left incremento;
+
+
+
+
+
+
+//-------------------> No Terminal inicial
+start with INICIO;
+
+INICIO::=   CJS:n1 {:
+            :};
+
+CJS::=   CJS:a CUERPO:n1 {:
+                :}
+
+        | CUERPO:n1 {:
+                :};
+
+CUERPO::=   SENTENCIA:sen {:
+                :}
+        | FUNCIONES:fun{:
+                :};
+
+SENTENCIA::=    ASIG:asig p_coma{:
+                :}
+                | PARA:para{:
+                :}
+                | MIENTRAS:wh{:
+                :}
+                |SI:si {:
+                :}
+                | IMPRIMIR:val p_coma{:
+                     RESULT = new NodoAST("IMPRIMIR", "")
+                    RESULT.getLhijo().add(val);
+                :}
+                | RETORNO:ret{:
+                    RESULT = new NodoAST("RETORNO", "")
+                    RESULT.getLhijo().add(ret);
+                :}
+                | SELECCIONA:sw{:
+                :}
+                | DECLARACION:dec p_coma{:
+                :}
+                | EVENTO:llam p_coma{:
+                :}
+                | DETENER p_coma{:
+                :}
+                | MENSAJE:mens p_coma{:
+                    RESULT = new NodoAST("MENSAJE", "");
+                    RESULT.getLhijo().add(mens);
+                :}
+                |error:error p_coma {::};
+
+ASIGNACION::=   identificador:id dos_puntos E:e{:
+                :}
+                | identificador:id llave_a E:e1 llave_c dos_puntos E:e2{:
+                :};
+
+
+DECLARACION::=   pr_dimv L_ID{:
+
+        :}
+        | pr_dimv identificador:id llave_a E:exp llave_c   {:
+
+                :}
+        | pr_dimv ASIGNACION:asig {:
+                :};
+
+
+L_EXP::=   L_EXP:le coma E:e{:
+                RESULT = le;
+                RESULT.getLhijo().add(e);
+:}
+                | E:e {:
+                    RESULT = new NodoAST("L_EXPRESIONES","");
+                    RESULT.getLhijo().add(e);
+                :};
+
+L_ID::=   L_ID:val coma identificador:id{:
+                RESULT = val;
+                RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR", id));
+                :}
+                | identificador:id {:
+                    RESULT = new NodoAST("L_ID", "");
+                    RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR", id));
+                :};
+
+
+EVENTO::=       pr_documento punto pr_obtener pr_parA E:e pr_parC punto OBSERVADOR:obs{:
+                :}
+                |pr_documento punto pr_obtener pr_parA E:e pr_parC punto AGREGAR:set {:
+                :}
+                | pr_documento punto pr_obtener pr_parA E:e pr_parC{:
+                :}
+                | identificador:id punto CONTEO {:
+                :}
+                | identificador:id1 punto identificador:id2{:
+                :}
+                | identificador:id1 pr_parA pr_parC punto identificador:id2{:
+                :}
+                | identificador:id1 pr_parA L_EXP:le pr_parC punto identificador:id2{:
+                :}
+                | identificador:id pr_parA pr_parC punto AGREGAR:set{:
+                :}
+                | identificador:id pr_parA pr_parC punto OBSERVADOR:obs{:
+                :}
+                | identificador:id pr_parA L_EXP:le pr_parC punto AGREGAR:ag{:
+                :}
+                | identificador:id pr_parA L_EXP:le pr_parC punto OBSERVADOR:obs{:
+                    
+                :}
+                | identificador:id punto AGREGAR:set{:
+                    RESULT = new NodoAST(id,"AGREGAR");
+                    RESULT.getLhijo().add(set);
+                :}
+                | identificador:id punto OBSERVADOR:obs{:
+                    RESULT = new NodoAST(id,"OBSERADOR");
+                    RESULT.getLhijo().add(obs);
+                :}
+                | identificador:id punto pr_atexto pr_parA pr_parC{:
+                    RESULT = new NodoAST(id,"llamada");
+                    RESULT.getLhijo().add(new NodoAST("ATEXTO",""));
+                :}
+                | identificador:id pr_parA pr_parC{:
+                    RESULT = new NodoAST(id,"llamada");
+                    
+                :}
+                | identificador:id pr_parA L_EXP:le pr_parC{:
+                    RESULT = new NodoAST(id,"llamada_par");
+                    RESULT.getLhijo().add(le);
+                :};
+
+AGREGAR::=   pr_setelemento pr_parA L_EXP:exp pr_parC{:
+                    RESULT = new NodoAST("AGREGAR","");
+                    RESULT.getLhijo().add(exp);
+                :};
+                
+OBSERVADOR::=   pr_observador pr_parA L_EXP:e coma pr_funcion pr_parA pr_parC llave_a L_SENTENCIA:sen llave_c pr_parC{:
+                    RESULT = new NodoAST("OBSERVADOR","");
+                    RESULT.getLhijo().add(e);
+                    RESULT.getLhijo().add(sen);
+                    
+                :}
+                | pr_observador pr_parA L_EXP:exp pr_parC{:
+                    RESULT = new NodoAST("OBSERVADOR");
+                    RESULT.getLhijo().add(exp);
+                    
+                    
+                :};
+
+FUNCIONES::=   pr_funcion identificador:id pr_parA L_ID:lid pr_parC llave_a L_SENTENCIA:sen2 llave_c{:
+                    RESULT = new NodoAST("FUNCION","");
+                    RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR",id));
+                    RESULT.getLhijo().add(sen);
+                    RESULT.getLhijo().add(sen2);
+                :}
+                |pr_funcion identificador:id pr_parA L_ID:lid pr_parC llave_a llave_c{:
+                    RESULT = new NodoAST("FUNCION","PARAMETROS");
+                    RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR",id));
+                    RESULT.getLhijo().add(lid);
+                :}
+                | pr_funcion identificador:id pr_parA pr_parC llave_a L_SENTENCIA:sen llave_c{:
+                    RESULT = new NodoAST("FUNCION","");
+                    RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR",id));
+                    RESULT.getLhijo().add(sen);
+                :}
+                | pr_funcion identificador:id pr_parA pr_parC llave_a llave_c{:
+                    RESULT = new NodoAST("FUNCION","");
+                    RESULT.getLhijo().add(new NodoAST("IDENTIFICADOR",id));
+                    
+                :};
+
+L_SENTENCIA::=   L_SENTENCIA:l_sen SENTENCIA:sen{:
+                    RESULT = l_sen;
+                    RESULT.getLhijo().add(sen);
+                :}
+                | SENTENCIA:sen{:
+                    RESULT = new NodoAST("L_SENTENCIA", "sentencia");
+                    RESULT.getLhijo().add(sen);
+                :};
+
+
+IF::=   pr_si pr_parA E:e pr_parC llave_a L_SENTENCIA:sen llave_c{:
+                    RESULT = new NodoAST("SI","SI");
+                    RESULT.getLhijo().add(e);
+                    RESULT.getLhijo().add(sen);  
+                    
+                   
+                
+                :}
+                | pr_si pr_parA E:e pr_parC llave_a L_SENTENCIA:sen llave_c pr_sino llave_a L_SENTENCIA:sen2 llave_c{:
+                    RESULT = new NodoAST("SI","SINO");
+                    RESULT.getLhijo().add(e);
+                    RESULT.getLhijo().add(sen);  
+                    RESULT.getLhijo().add(sen2);            
+                
+                :};
+
+SELECCIONA::= pr_selecciona pr_parA E:e pr_parC llave_a CUERPO_SELE:lcaso llave_c{:
+                    RESULT = new NodoAST("SWITCH","");
+                    RESULT.getLhijo().add(e);
+                    RESULT.getLhijo().add(lcaso);
+                
+                :};
+
+CUERPO_SELE::=   CUERPO_SELE:lcaso CASO:cas{:
+                    RESULT = lcaso;
+                    RESULT.getLhijo().add(cas);
+                :}
+                | CASO:cas{:
+                    RESULT = new NodoAST("CUERPO-SWITCH","");
+                    RESULT.getLhijo().add(cas);
+                :};
+
+CASO::=   pr_caso E:e dos_puntos L_SENTENCIA:sen{:
+                    RESULT = new NodoAST("CASO", "con_sen");
+                    RESULT.getLhijo().add(sen);
+                :}
+                | pr_defecto:pr dos_puntos L_SENTENCIA:l_sen{:
+                    RESULT = new NodoAST("CASO", pr);
+                    RESULT.getLhijo().add(sen);
+                :}
+                | pr_caso:pr E:e dos_puntos {:
+                    RESULT = new NodoAST("CASO", pr);
+                    RESULT.getLhijo().add(e);
+                :}
+                | pr_defecto:pr dos_puntos{:
+                    RESULT = new NodoAST("CASO", pr);
+                :};
+
+IMPRIMIR::= pr_imprimir pr_parA E:e pr_parC{:
+                    RESULT = e;
+                :};
+
+MENSAJE::=   pr_mensaje pr_parA E:e pr_parC{:
+                    RESULT = e;
+                :};
+
+RETORNO::= pr_retornar E:e p_coma{:
+                    RESULT = e;
+                :};
+
+MIENTRAS::= pr_mientras pr_parA E:e pr_parC llave_a L_SENTENCIA:sen llave_c{:
+                :}
+                |pr_mientras pr_parA E:e pr_parC llave_a llave_c{:
+                    RESULT = new NodoAST("CICLO", "MIENTRAS");
+                    RESULT.getLhijo().add(e);
+                    RESULT.getLhijo().add(sen);
+                    
+                    
+                :};
+
+PARA::= pr_para pr_parA identificador:id dos_puntos E:e1 p_coma E:e2 p_coma OPERADOR:op pr_parC llave_a L_SENTENCIA:sen llave_c{:
+                    RESULT = new NodoAST("CICLO", "PARA");
+                    RESULT.getLhijo().add(e1);
+                    RESULT.getLhijo().add(e2);
+                    RESULT.getLhijo().add(new NodoAST("OPERADOR", op));
+                    RESULT.getLhijo().add(sen);
+                :}
+                |pr_para pr_parA identificador:id dos_puntos E:e1 p_coma E:e2 p_coma OPERADOR:op pr_parC llave_a llave_c{:
+                    RESULT = new NodoAST("CICLO", "PARA");
+                    RESULT.getLhijo().add(e1);
+                    RESULT.getLhijo().add(e2);
+                    RESULT.getLhijo().add(new NodoAST("OPERADOR", op));
+                    
+                :};
+
+OPERADOR::=    incremento:in {:
+                    RESULT = new NodoAST("OPERADOR","++");
+                :}
+                | decremento:dec{:
+                    RESULT = new NodoAST("OPERADOR","--");
+                :};
+
+ARREGLO::= llave_a L_EXP:le llave_c{:
+                    RESULT = le;
+                :};
+
+
+E::=   E:val1 pr_and E:val2{:
+                    
+                    RESULT = new NodoAST("AND", "&&");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | ARREGLO:a{:
+                    RESULT = new NodoAST("ARREGLO", "arreglo");
+                    RESULT.getLhijo().add(a);
+                :}
+                | E:val1 pr_or E:val2{:
+                    RESULT = new NodoAST("OR", "||");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | pr_not E:e{:
+                    RESULT = new NodoAST("NOT", "!");
+                    RESULT.getLhijo().add(e);
+                    
+                :}
+                | E:val1 igual E:val2{:
+                    RESULT = new NodoAST("IGUAL", "=");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 mayor_igual E:val2{:
+                    RESULT = new NodoAST("MAYORIGUAL", ">=");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 menor_igual E:val2{:
+                    RESULT = new NodoAST("MENORIGUAL", "<=");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 diferente E:val2{:
+                    RESULT = new NodoAST("DIFERENTE", "!=");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 mayor E:val2{:
+                    RESULT = new NodoAST("MAYORQUE", ">");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 menor E:val2{:
+                    RESULT = new NodoAST("MENORQUE", "<");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 mas E:val2{:
+                    RESULT = new NodoAST("SUMA", "+");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 menos E:val2{:
+                    RESULT = new NodoAST("RESTA", "-");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 por E:val2{:
+                    RESULT = new NodoAST("MULT", "*");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val1 div E:val2{:
+                    RESULT = new NodoAST("DIVISION", "/");
+                    RESULT.getLhijo().add(val1);
+                    RESULT.getLhijo().add(val2);
+                :}
+                | E:val incremento{:
+                    RESULT = new NodoAST("OPERADOR","++");
+                    RESULT.getLhijo().add(val);
+                :}
+                | pr_false:val {:
+                    RESULT = new NodoAST("FALSE",val);
+                :}
+                | pr_true:val{:
+                    RESULT = new NodoAST("TRUE",val);
+                :}
+                | E:val decremento{:
+                    RESULT = new NodoAST("OPERADOR","--");
+                    RESULT.getLhijo().add(val);
+                :}
+                | menos:n E:ex{:
+                    RESULT = new NodoAST("NEGATIVO", "-");
+                      RESULT.getLhijo().add(ex);
+                :}
+                |  numero:num {:
+
+                    RESULT = new NodoAST("NUMERICO", num);
+                :}
+                | cadena:cad {:
+                    RESULT = new NodoAST("CADEMA", cad);
+                :}
+                | identificador:id {:
+                    RESULT = new NodoAST("IDENTIFICADOR", id);
+                :}
+                | identificador:id llave_a E:e llave_c{:
+                    RESULT = new NodoAST("IDENTIFICADOR", id);
+                    RESULT.getLhijo().add(e);
+                :}
+                | EVENTO:evento {:
+                    
+                :}
+                
+                | pr_parA E:e pr_parC{:
+                    RESULT = new NodoAST("EXPRESION","E");
+                    RESULT.getLhijo().add(e);
+                :};
